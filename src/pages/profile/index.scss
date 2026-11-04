@@ -88,11 +88,15 @@
   flex-shrink: 0;
 }
 
+/* 默认头像：品牌暖色渐变底 + 白色人像图标，不再依赖预生成的 PNG */
 .avatar {
   width: 112px;
   height: 112px;
   border-radius: 50%;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffcba8 0%, #ff9161 48%, #de4c2a 100%);
 }
 
 .ident {
@@ -257,6 +261,7 @@
 .menu-icon {
   width: 64px;
   height: 64px;
+  padding: 10px;
   border-radius: 18px;
   background: $brand-soft;
   display: flex;

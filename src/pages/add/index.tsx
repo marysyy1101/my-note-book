@@ -1,9 +1,11 @@
-import { View, Text, Image, Input, Picker, PickerView, PickerViewColumn, ScrollView } from '@tarojs/components'
+import { View, Text, Input, Picker, PickerView, PickerViewColumn, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { Calendar, ChevronRight, Clock, Delete as Backspace, Pencil } from 'lucide-react-taro'
 import { useMemo, useRef, useState } from 'react'
 
-import { CAT_ICONS, UI_ICONS } from '@/assets/icons'
+import CatIcon from '@/components/CatIcon'
 import { getCategories } from '@/constants/categories'
+import { ICON_COLOR, ICON_STROKE } from '@/constants/icons'
 import { addBill } from '@/services/bill'
 import { alpha } from '@/utils/color'
 import { clockFromParts, clockParts, formatClock, pad2, parseDate, today } from '@/utils/date'
@@ -172,10 +174,11 @@ export default function Add () {
                     boxShadow: active ? `0 8px 18px ${alpha(cat.color, 0.32)}` : 'none'
                   }}
                 >
-                  <Image
+                  <CatIcon
                     className='cat-img'
-                    src={active ? CAT_ICONS[`${cat.icon}-on`] || CAT_ICONS[cat.icon] : CAT_ICONS[cat.icon]}
-                    mode='aspectFit'
+                    name={cat.icon}
+                    size={30}
+                    color={active ? ICON_COLOR.white : cat.color}
                   />
                 </View>
                 <Text className={`cat-name ${active ? 'on' : ''}`}>{cat.name}</Text>
@@ -187,18 +190,18 @@ export default function Add () {
         <View className='meta'>
           <Picker mode='date' value={date} end={today()} onChange={(e) => setDate(e.detail.value)}>
             <View className='meta-row'>
-              <Image className='meta-icon' src={UI_ICONS.calendar} mode='aspectFit' />
+              <Calendar className='meta-icon' size={22} color={ICON_COLOR.body} strokeWidth={ICON_STROKE.default} />
               <Text className='meta-text'>{dateLabel}</Text>
-              <Image className='meta-arrow' src={UI_ICONS.chevronRight} mode='aspectFit' />
+              <ChevronRight className='meta-arrow' size={22} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
             </View>
           </Picker>
           <View className='meta-row' onClick={openTime}>
-            <Image className='meta-icon' src={UI_ICONS.clock} mode='aspectFit' />
+            <Clock className='meta-icon' size={22} color={ICON_COLOR.body} strokeWidth={ICON_STROKE.default} />
             <Text className='meta-text num'>{time}</Text>
-            <Image className='meta-arrow' src={UI_ICONS.chevronRight} mode='aspectFit' />
+            <ChevronRight className='meta-arrow' size={22} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
           </View>
           <View className='meta-row'>
-            <Image className='meta-icon' src={UI_ICONS.pencil} mode='aspectFit' />
+            <Pencil className='meta-icon' size={22} color={ICON_COLOR.body} strokeWidth={ICON_STROKE.default} />
             <Input
               className='note-input'
               value={note}
@@ -220,7 +223,7 @@ export default function Add () {
               onClick={() => tapKey(key)}
             >
               {key === 'del'
-                ? <Image className='key-icon' src={UI_ICONS.backspace} mode='aspectFit' />
+                ? <Backspace className='key-icon' size={32} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
                 : <Text className='key-text num'>{key}</Text>}
             </View>
           ))}

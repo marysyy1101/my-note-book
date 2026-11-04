@@ -2,7 +2,7 @@ import type { Category } from '@/types/bill'
 
 /**
  * 支出分类
- * 图标来自开源图标库 Lucide（ISC License），见 scripts/gen-icons.mjs
+ * icon 为 lucide 图标名，渲染入口见 components/CatIcon.tsx
  */
 export const EXPENSE_CATEGORIES: Category[] = [
   { id: 'food', name: '餐饮', icon: 'utensils', color: '#F26B3A' },

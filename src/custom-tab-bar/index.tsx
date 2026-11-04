@@ -1,12 +1,9 @@
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { Plus, UserRound, List } from 'lucide-react-taro'
 import { useEffect, useState } from 'react'
 
-import billIcon from '@/assets/tabbar/bill.png'
-import billActiveIcon from '@/assets/tabbar/bill-active.png'
-import userIcon from '@/assets/tabbar/user.png'
-import userActiveIcon from '@/assets/tabbar/user-active.png'
-import { UI_ICONS } from '@/assets/icons'
+import { ICON_COLOR, ICON_STROKE } from '@/constants/icons'
 import { TABBAR_EVENT, TAB_INDEX, TAB_PROFILE, currentRoute, goAdd } from '@/utils/tabbar'
 
 import './index.scss'
@@ -40,21 +37,21 @@ export default function CustomTabBar () {
     <View className='tabbar'>
       <View className='bar'>
         <View className='tab' onClick={() => switchTo(TAB_INDEX)}>
-          <Image className='tab-icon' src={activeIndex ? billActiveIcon : billIcon} mode='aspectFit' />
+          <List className='tab-icon' size={32} color={activeIndex ? ICON_COLOR.brand : ICON_COLOR.muted} strokeWidth={ICON_STROKE.default} />
           <Text className={`tab-text${activeIndex ? ' on' : ''}`}>明细</Text>
         </View>
 
         <View className='tab tab-center' onClick={goAdd}>
           <View className='plus-wrap'>
             <View className='plus'>
-              <Image className='plus-icon' src={UI_ICONS.plusWhite} mode='aspectFit' />
+              <Plus className='plus-icon' size={40} color={ICON_COLOR.white} strokeWidth={ICON_STROKE.strong} />
             </View>
           </View>
           <Text className='plus-text'>记一笔</Text>
         </View>
 
         <View className='tab' onClick={() => switchTo(TAB_PROFILE)}>
-          <Image className='tab-icon' src={activeProfile ? userActiveIcon : userIcon} mode='aspectFit' />
+          <UserRound className='tab-icon' size={32} color={activeProfile ? ICON_COLOR.brand : ICON_COLOR.muted} strokeWidth={ICON_STROKE.default} />
           <Text className={`tab-text${activeProfile ? ' on' : ''}`}>我的</Text>
         </View>
       </View>

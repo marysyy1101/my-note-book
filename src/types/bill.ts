@@ -24,7 +24,7 @@ export type BillInput = Pick<Bill, 'type' | 'categoryId' | 'amount' | 'date' | '
 export interface Category {
   id: string
   name: string
-  /** 图标 key，对应 assets/icons/cat/{icon}.png */
+  /** 图标 key，对应 components/CatIcon.tsx 的注册表 */
   icon: string
   /** 图标主色，同时用于色块的浅色背景 */
   color: string

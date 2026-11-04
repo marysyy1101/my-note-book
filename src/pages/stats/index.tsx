@@ -1,8 +1,10 @@
-import { View, Text, Image, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView } from '@tarojs/components'
 import { useDidShow } from '@tarojs/taro'
+import { CloudOff, ReceiptText } from 'lucide-react-taro'
 import { useMemo, useRef, useState } from 'react'
 
-import { CAT_ICONS, UI_ICONS } from '@/assets/icons'
+import CatIcon from '@/components/CatIcon'
+import { ICON_COLOR, ICON_STROKE } from '@/constants/icons'
 import { fetchStats } from '@/services/stats'
 import { getAccountTag, silentLogin } from '@/services/auth'
 import { alpha } from '@/utils/color'
@@ -164,7 +166,7 @@ export default function Stats () {
 
       {error ? (
         <View className='state-box'>
-          <Image className='state-icon' src={UI_ICONS.cloudOff} mode='aspectFit' />
+          <CloudOff className='state-icon' size={86} color={ICON_COLOR.muted} strokeWidth={ICON_STROKE.default} />
           <Text className='state-title'>{error.title}</Text>
           <Text className='state-desc'>{error.desc}</Text>
           <View className='state-btn' onClick={() => load(period)}>重新加载</View>
@@ -253,7 +255,7 @@ export default function Stats () {
               {list.map((c) => (
                 <View className='cat-row' key={c.id}>
                   <View className='cat-ic' style={{ background: alpha(c.color, 0.1) }}>
-                    <Image className='cat-ic-img' src={CAT_ICONS[c.icon]} mode='aspectFit' />
+                    <CatIcon className='cat-ic-img' name={c.icon} size={30} color={c.color} />
                   </View>
                   <View className='cat-main'>
                     <View className='cat-line'>
@@ -283,7 +285,7 @@ export default function Stats () {
 
           {!hasData && !loading ? (
             <View className='state-box'>
-              <Image className='state-icon' src={UI_ICONS.receipt} mode='aspectFit' />
+              <ReceiptText className='state-icon' size={86} color={ICON_COLOR.muted} strokeWidth={ICON_STROKE.default} />
               <Text className='state-title'>{rangeLabel}还没有记录</Text>
               <Text className='state-desc'>记下几笔账，这里会自动汇总</Text>
             </View>

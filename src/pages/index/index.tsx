@@ -1,9 +1,11 @@
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import Taro, { useDidShow, useReachBottom } from '@tarojs/taro'
+import { ChevronLeft, ChevronRight, CloudOff, ReceiptText, Trash2, ChartColumn } from 'lucide-react-taro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { CAT_ICONS, UI_ICONS } from '@/assets/icons'
+import CatIcon from '@/components/CatIcon'
 import { getCategory } from '@/constants/categories'
+import { ICON_COLOR, ICON_STROKE } from '@/constants/icons'
 import { fetchBills, removeBill, PAGE_SIZE } from '@/services/bill'
 import { fetchStats } from '@/services/stats'
 import { clockShort, friendlyDay, monthLabel, monthRange, normalizeMonth, shiftMonth, weekdayCN } from '@/utils/date'
@@ -330,11 +332,11 @@ export default function Index () {
       <View className='topbar'>
         <View className='month-switch'>
           <View className='nav-btn' onClick={() => changeMonth(-1)}>
-            <Image className='nav-icon' src={UI_ICONS.chevronLeft} mode='aspectFit' />
+            <ChevronLeft className='nav-icon' size={34} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
           </View>
           <Text className='month-label'>{monthLabel(ym)}</Text>
           <View className='nav-btn' onClick={() => changeMonth(1)}>
-            <Image className='nav-icon' src={UI_ICONS.chevronRight} mode='aspectFit' />
+            <ChevronRight className='nav-icon' size={34} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
           </View>
         </View>
         <View className='today-btn' onClick={backToThisMonth}>本月</View>
@@ -346,7 +348,7 @@ export default function Index () {
           <Text className='hero-k'>{isCurrentMonth ? '本月支出' : `${Number(ym.split('-')[1])}月支出`}</Text>
           <View className='hero-stat' onClick={goStats}>
             <Text className='hero-stat-text'>统计</Text>
-            <Text className='hero-stat-arrow'>›</Text>
+            <ChartColumn className='hero-stat-arrow' size={12} color={ICON_COLOR.white} strokeWidth={ICON_STROKE.strong} />
           </View>
         </View>
         <View className='hero-amount'>
@@ -373,7 +375,7 @@ export default function Index () {
 
       {error ? (
         <View className='state-box'>
-          <Image className='state-icon' src={UI_ICONS.cloudOff} mode='aspectFit' />
+          <CloudOff className='state-icon' size={96} color={ICON_COLOR.muted} strokeWidth={ICON_STROKE.default} />
           <Text className='state-title'>{error.title}</Text>
           <Text className='state-desc'>{error.desc}</Text>
           <View className='state-btn' onClick={() => load(true)}>重新加载</View>
@@ -394,7 +396,7 @@ export default function Index () {
 
       {isEmpty ? (
         <View className='state-box'>
-          <Image className='state-icon' src={UI_ICONS.receipt} mode='aspectFit' />
+          <ReceiptText className='state-icon' size={96} color={ICON_COLOR.muted} strokeWidth={ICON_STROKE.default} />
           <Text className='state-title'>这个月还没有记账</Text>
           <Text className='state-desc'>点底部的「＋」记下第一笔</Text>
           <View className='state-btn' onClick={goAdd}>记一笔</View>
@@ -499,7 +501,7 @@ const SwipeRow = memo(function SwipeRow (props: SwipeRowProps) {
     <View className='row-wrap'>
       {/* 压在内容下面的删除按钮，内容左移后露出 */}
       <View className='row-action' onClick={() => onDelete(item)}>
-        <Image className='row-action-icon' src={UI_ICONS.trashWhite} mode='aspectFit' />
+        <Trash2 className='row-action-icon' size={22} color={ICON_COLOR.white} strokeWidth={ICON_STROKE.default} />
         <Text className='row-action-text'>删除</Text>
       </View>
       <View
@@ -515,7 +517,7 @@ const SwipeRow = memo(function SwipeRow (props: SwipeRowProps) {
           className='row-icon'
           style={{ background: alpha(item.cat.color, 0.1) }}
         >
-          <Image className='row-icon-img' src={CAT_ICONS[item.cat.icon]} mode='aspectFit' />
+          <CatIcon className='row-icon-img' name={item.cat.icon} size={40} color={item.cat.color} />
         </View>
         <View className='row-main'>
           <Text className='row-name'>{item.cat.name}</Text>

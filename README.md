@@ -24,7 +24,7 @@ cloudfunctions/        云函数（需在开发者工具中上传部署）
   stats/               统计聚合（分类汇总 + 趋势分桶）
 preview/index.html     纯 HTML 设计预览：明细 / 记一笔 / 统计
 preview/profile.html   个人中心设计预览（浏览器直接打开，不参与小程序构建）
-scripts/gen-icons.mjs  由 Lucide 生成 PNG 图标与图标映射
+scripts/               构建补丁与产物体检（patch-taro-raf / check-dist）
 src/
   app.tsx / app.config.ts / app.scss
   config/cloud.ts      云开发环境 ID、集合名、云函数名
@@ -200,13 +200,20 @@ requestAnimationFrame: ['@tarojs/runtime', 'requestAnimationFrame']
 
 ## 图标
 
-全部图标来自开源图标库 [Lucide](https://lucide.dev)（ISC License），通过 `npm run icons` 由 SVG 生成 PNG：
+全部图标来自开源图标库 [Lucide](https://lucide.dev)（ISC License），通过 `lucide-react-taro` 以 React 组件形式使用，不再预生成 PNG：
 
-- 分类图标：彩色 + 白色选中态两套
-- 界面图标：返回、日历、备注、退格等
-- tabBar 图标：微信 tabBar 只接受图片，因此单独输出 81×81 PNG
+- 界面图标：`import { Calendar, ChevronRight } from 'lucide-react-taro'`，直接传 `size` / `color`
+- 分类图标：`src/components/CatIcon.tsx` 维护 `key → 组件` 注册表，颜色随分类色或选中态实时切换
+- 图标色板：`src/constants/icons.ts`（与 `styles/_vars.scss` 的文本层级对齐）
+- 默认头像：纯 CSS 渐变 + `UserRound` 图标，见 `src/pages/profile/index.scss`
 
-想换图标时，改 `scripts/gen-icons.mjs` 里的名单再执行 `npm run icons`，`src/assets/icons/index.ts` 会自动重建。
+渲染方式：小程序端由组件把 SVG 转成 `data:image/svg+xml` 交给 `<Image>`，因此**颜色只能靠 `color` 属性传**，
+无法继承 CSS 的 `currentColor`；尺寸同样由 `size` 决定（组件输出内联 `width/height`，优先级高于 scss 里同名 class），
+`className` 只用于布局、外边距与 `opacity`。
+
+新增图标只需 `import` 后使用；分类图标还需在 `CatIcon` 的注册表里补一行。`lucide-react-taro` 的产物含
+`??` 等 ES2020 语法，已在 `config/index.ts` 的 `mini.compile.include` 中纳入 babel 处理，保证通过
+`scripts/check-dist.mjs` 的 ES5 体检。
 
 ## 常见报错对照
 

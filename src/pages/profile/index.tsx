@@ -1,10 +1,11 @@
-import { View, Text, Image, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
+import { ChartColumn, ChevronRight, Database, Info, PencilLine, Settings, UserRound } from 'lucide-react-taro'
 import { Fragment, useMemo, useRef, useState } from 'react'
 
-import { UI_ICONS } from '@/assets/icons'
 import { CLOUD_ENV } from '@/config/cloud'
 import { IS_DEV } from '@/config/env'
+import { ICON_COLOR, ICON_STROKE } from '@/constants/icons'
 import { ensureLogin, getAccountTag } from '@/services/auth'
 import { fetchStats } from '@/services/stats'
 import { monthRange, normalizeMonth, today } from '@/utils/date'
@@ -150,7 +151,9 @@ export default function Profile () {
       >
         <View className='user'>
           <View className='avatar-wrap'>
-            <Image className='avatar' src={UI_ICONS.avatar} mode='aspectFill' />
+            <View className='avatar'>
+              <UserRound size={56} color={ICON_COLOR.white} strokeWidth={ICON_STROKE.default} />
+            </View>
           </View>
           <View className='ident'>
             <View className='name-row'>
@@ -159,7 +162,7 @@ export default function Profile () {
             <Text className='sub'>{subtitle}</Text>
           </View>
           {/* <View className='gear' onClick={openSettings}>
-            <Image className='gear-img' src={UI_ICONS.settings} mode='aspectFit' />
+            <Settings className='gear-img' size={32} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
           </View> */}
         </View>
 
@@ -191,40 +194,40 @@ export default function Profile () {
           <Text className='card-title'>常用服务</Text>
           <View className='menu-row' onClick={goAdd}>
             <View className='menu-icon'>
-              <Image className='menu-img' src={UI_ICONS.edit} mode='aspectFit' />
+              <PencilLine className='menu-img' size={28} color={ICON_COLOR.brand} strokeWidth={ICON_STROKE.default} />
             </View>
             <Text className='menu-text'>记一笔</Text>
-            <Image className='menu-arrow' src={UI_ICONS.chevronRight} mode='aspectFit' />
+            <ChevronRight className='menu-arrow' size={22} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
           </View>
           <View className='menu-line' />
           <View className='menu-row' onClick={() => Taro.navigateTo({ url: '/pages/stats/index' })}>
             <View className='menu-icon'>
-              <Image className='menu-img' src={UI_ICONS.chart} mode='aspectFit' />
+              <ChartColumn className='menu-img' size={28} color={ICON_COLOR.brand} strokeWidth={ICON_STROKE.default} />
             </View>
             <Text className='menu-text'>数据统计</Text>
-            <Image className='menu-arrow' src={UI_ICONS.chevronRight} mode='aspectFit' />
+            <ChevronRight className='menu-arrow' size={22} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
           </View>
           {IS_DEV ? (
             <Fragment>
               <View className='menu-line' />
               <View className='menu-row' onClick={showEnv}>
                 <View className='menu-icon'>
-                  <Image className='menu-img' src={UI_ICONS.database} mode='aspectFit' />
+                  <Database className='menu-img' size={28} color={ICON_COLOR.brand} strokeWidth={ICON_STROKE.default} />
                 </View>
                 <Text className='menu-text'>云开发环境</Text>
                 <Text className='menu-value'>{CLOUD_ENV ? '已连接' : '默认'}</Text>
-                <Image className='menu-arrow' src={UI_ICONS.chevronRight} mode='aspectFit' />
+                <ChevronRight className='menu-arrow' size={22} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
               </View>
             </Fragment>
           ) : null}
           <View className='menu-line' />
           <View className='menu-row' onClick={showAbout}>
             <View className='menu-icon'>
-              <Image className='menu-img' src={UI_ICONS.info} mode='aspectFit' />
+              <Info className='menu-img' size={28} color={ICON_COLOR.brand} strokeWidth={ICON_STROKE.default} />
             </View>
             <Text className='menu-text'>关于</Text>
             <Text className='menu-value'>v{APP_VERSION}</Text>
-            <Image className='menu-arrow' src={UI_ICONS.chevronRight} mode='aspectFit' />
+            <ChevronRight className='menu-arrow' size={22} color={ICON_COLOR.strong} strokeWidth={ICON_STROKE.default} />
           </View>
         </View>
 

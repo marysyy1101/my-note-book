@@ -1,4 +1,5 @@
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import path from 'node:path'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
@@ -21,8 +22,6 @@ export default defineConfig<'webpack5'>(async (merge) => {
     defineConstants: {},
     copy: {
       patterns: [
-        // tabBar 图标：小程序端 tabBar 只能读取包内静态图片，这里做一次兜底拷贝
-        { from: 'src/assets/tabbar/', to: 'dist/assets/tabbar/' },
         // 站点地图：个人账本不做搜索索引，声明 disallow（app.json 通过 sitemapLocation 指向它）
         { from: 'src/sitemap.json', to: 'dist/sitemap.json' }
       ],
@@ -37,6 +36,12 @@ export default defineConfig<'webpack5'>(async (merge) => {
       enable: false
     },
     mini: {
+      /* lucide-react-taro 的产物里用到 ?? 等 ES2020 语法，而微信开发者工具在
+         预览/上传阶段按 ES2015 解析产物。这里把它纳入 babel 处理范围，
+         否则 scripts/check-dist.mjs 会直接报语法不兼容。 */
+      compile: {
+        include: [path.resolve(__dirname, '..', 'node_modules', 'lucide-react-taro')]
+      },
       postcss: {
         pxtransform: {
           enable: true,
