@@ -1,0 +1,28 @@
+/* 全局基础样式（Taro designWidth=750，此处 px 会按 1:1 转成 rpx） */
+
+page {
+  background: #f4f5f7;
+  color: #1b1f24;
+  font-size: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Helvetica, 'Microsoft YaHei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+view,
+text,
+scroll-view,
+input,
+button,
+image {
+  box-sizing: border-box;
+}
+
+image {
+  display: block;
+}
+
+.num {
+  font-family: -apple-system, BlinkMacSystemFont, 'DIN Alternate', 'Helvetica Neue', Helvetica, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}

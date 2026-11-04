@@ -1,0 +1,348 @@
+@use '../../styles/vars' as *;
+
+.stats-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $bg;
+  overflow: hidden;
+}
+
+/* ---------- 周期切换 ---------- */
+.segmented {
+  display: flex;
+  margin: 22px 28px 0;
+  padding: 6px;
+  background: #e9ebee;
+  border-radius: 999px;
+}
+
+.seg-item {
+  flex: 1;
+  text-align: center;
+  padding: 14px 0;
+  font-size: 26px;
+  color: $text-2;
+  border-radius: 999px;
+
+  &.on {
+    background: #fff;
+    color: $text-1;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(20, 25, 35, 0.08);
+  }
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 0 28px 40px;
+}
+
+.range-tip {
+  font-size: 22px;
+  color: $text-3;
+  padding: 22px 6px 12px;
+}
+
+/* ---------- 收支卡 ---------- */
+.balance-card {
+  background: $card;
+  border-radius: $radius-lg;
+  padding: 32px 16px;
+  box-shadow: 0 6px 24px rgba(20, 25, 35, 0.04);
+}
+
+.bc-row {
+  display: flex;
+}
+
+.bc-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.bc-k {
+  font-size: 22px;
+  color: $text-3;
+}
+
+.bc-v {
+  font-size: 34px;
+  font-weight: 600;
+  margin-top: 14px;
+  letter-spacing: -1px;
+
+  &.income {
+    color: $income;
+  }
+}
+
+/* ---------- 通用卡片 ---------- */
+.card {
+  margin-top: 24px;
+  background: $card;
+  border-radius: $radius-lg;
+  padding: 30px 28px;
+  box-shadow: 0 6px 24px rgba(20, 25, 35, 0.04);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+
+.card-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: $text-1;
+}
+
+.card-sub {
+  font-size: 22px;
+  color: $text-3;
+}
+
+/* ---------- 柱状图 ---------- */
+.chart {
+  display: flex;
+  align-items: flex-end;
+  height: 190px;
+}
+
+.bar-col {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 0;
+}
+
+.bar {
+  width: 56%;
+  max-width: 14px;
+  min-height: 3px;
+  border-radius: 6px 6px 3px 3px;
+  background: #edf0f3;
+
+  &.has {
+    background: linear-gradient(180deg, #ff9d70 0%, #f26b3a 100%);
+  }
+}
+
+.bar-label {
+  font-size: 18px;
+  color: #b3b9c0;
+  height: 26px;
+  line-height: 26px;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+.chart-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 20px;
+  border-top: 1px dashed $line;
+}
+
+.chart-foot-k {
+  font-size: 22px;
+  color: $text-3;
+}
+
+.chart-foot-v {
+  font-size: 26px;
+  font-weight: 600;
+  color: $text-1;
+}
+
+/* ---------- 分类排行 ---------- */
+.kind-switch {
+  display: flex;
+  padding: 4px;
+  background: #f2f3f5;
+  border-radius: 999px;
+}
+
+.kind-item {
+  font-size: 22px;
+  color: $text-2;
+  padding: 8px 22px;
+  border-radius: 999px;
+  line-height: 1.2;
+
+  &.on {
+    background: #fff;
+    color: $text-1;
+    font-weight: 600;
+  }
+}
+
+.cat-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 0;
+}
+
+.cat-ic {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 18px;
+  flex-shrink: 0;
+}
+
+.cat-ic-img {
+  width: 34px;
+  height: 34px;
+}
+
+.cat-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.cat-line {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.cat-name {
+  font-size: 26px;
+  color: $text-1;
+  font-weight: 500;
+}
+
+.cat-count {
+  font-size: 20px;
+  color: $text-3;
+  margin-left: 12px;
+}
+
+.cat-amount {
+  margin-left: auto;
+  font-size: 28px;
+  font-weight: 600;
+  color: $text-1;
+}
+
+.cat-track {
+  height: 8px;
+  background: #f2f3f5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cat-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.cat-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 22px;
+  border-top: 1px solid $line;
+}
+
+.cat-total-k {
+  font-size: 24px;
+  color: $text-3;
+}
+
+.cat-total-v {
+  font-size: 30px;
+  font-weight: 600;
+  color: $text-1;
+}
+
+.list-empty {
+  font-size: 24px;
+  color: $text-3;
+  text-align: center;
+  padding: 30px 0;
+}
+
+/* ---------- 状态 ---------- */
+.state-box {
+  margin-top: 80px;
+  padding: 0 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.state-icon {
+  width: 96px;
+  height: 96px;
+  opacity: 0.35;
+}
+
+.state-title {
+  font-size: 30px;
+  color: $text-2;
+  margin-top: 20px;
+}
+
+.state-desc {
+  font-size: 22px;
+  color: $text-3;
+  margin-top: 10px;
+  text-align: center;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+.state-btn {
+  margin-top: 26px;
+  padding: 16px 44px;
+  border-radius: 999px;
+  background: $brand;
+  color: #fff;
+  font-size: 26px;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 5px solid #e6e8eb;
+  border-top-color: $brand;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footer {
+  padding: 44px 0 20px;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 20px;
+  color: #b7bdc4;
+}

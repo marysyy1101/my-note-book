@@ -1,0 +1,323 @@
+@use '../../styles/vars' as *;
+
+.add-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $card;
+  overflow: hidden;
+}
+
+/* ---------- 收支切换 ---------- */
+.type-switch {
+  display: flex;
+  width: 300px;
+  margin: 22px auto 0;
+  padding: 6px;
+  background: #f1f2f4;
+  border-radius: 999px;
+}
+
+.type-item {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 26px;
+  color: $text-2;
+  border-radius: 999px;
+
+  &.on {
+    background: #fff;
+    color: $text-1;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(20, 25, 35, 0.08);
+  }
+}
+
+/* ---------- 金额 ---------- */
+.form {
+  flex: 1;
+  min-height: 0;
+}
+
+.amount-box {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding: 40px 40px 26px;
+}
+
+.currency {
+  font-size: 40px;
+  font-weight: 500;
+  margin-right: 8px;
+
+  &.expense {
+    color: $text-1;
+  }
+
+  &.income {
+    color: $income;
+  }
+}
+
+.amount {
+  font-size: 88px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -2px;
+
+  &.expense {
+    color: $text-1;
+  }
+
+  &.income {
+    color: $income;
+  }
+}
+
+.amount-sm {
+  font-size: 62px;
+}
+
+/* ---------- 分类 ---------- */
+.cat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 10px;
+}
+
+.cat-item {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0 10px;
+}
+
+.cat-icon {
+  width: 88px;
+  height: 88px;
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.cat-img {
+  width: 46px;
+  height: 46px;
+}
+
+.cat-name {
+  font-size: 22px;
+  color: $text-3;
+  margin-top: 10px;
+
+  &.on {
+    color: $text-1;
+    font-weight: 500;
+  }
+}
+
+/* ---------- 日期 / 备注 ---------- */
+.meta {
+  margin: 16px 28px 0;
+  border-top: 1px solid $line;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  height: 96px;
+  border-bottom: 1px solid $line;
+}
+
+.meta-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 16px;
+  opacity: 0.55;
+}
+
+.meta-text {
+  flex: 1;
+  font-size: 28px;
+  color: $text-1;
+}
+
+.meta-arrow {
+  width: 26px;
+  height: 26px;
+  opacity: 0.3;
+}
+
+.note-input {
+  flex: 1;
+  height: 96px;
+  font-size: 28px;
+  color: $text-1;
+}
+
+.note-ph {
+  color: $text-3;
+}
+
+/* ---------- 数字键盘 ---------- */
+.keyboard {
+  display: flex;
+  background: #f2f3f5;
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+  border-top: 1px solid $line;
+}
+
+.keys {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.key {
+  width: calc(33.3333% - 8px);
+  height: 102px;
+  margin: 4px;
+  background: #fff;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active {
+    background: #e9ebee;
+  }
+}
+
+.key-text {
+  font-size: 42px;
+  color: $text-1;
+}
+
+.key-icon {
+  width: 42px;
+  height: 42px;
+  opacity: 0.72;
+}
+
+.submit {
+  width: 172px;
+  margin: 4px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff8f5f 0%, #f26b3a 100%);
+  box-shadow: 0 10px 20px rgba(242, 107, 58, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.disabled {
+    opacity: 0.55;
+  }
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.submit-text {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+/* ---------- 时间选择层 ---------- */
+.time-layer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+}
+
+.time-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(20, 25, 35, 0.42);
+}
+
+.time-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 32px 32px 0 0;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  animation: time-up 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes time-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.time-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px 32px 10px;
+}
+
+.time-act {
+  font-size: 28px;
+  color: $text-2;
+  line-height: 1;
+}
+
+.time-ok {
+  color: $brand;
+  font-weight: 600;
+}
+
+/* 实时回显当前选中的时分秒 */
+.time-title {
+  font-size: 34px;
+  font-weight: 600;
+  color: $text-1;
+  letter-spacing: 1px;
+}
+
+.time-unit {
+  display: flex;
+  /* 与 .time-picker 的左右外边距对齐，三列标签才落在对应色轮正上方 */
+  padding: 0 20px;
+}
+
+.time-unit-t {
+  flex: 1;
+  text-align: center;
+  font-size: 22px;
+  color: $text-3;
+}
+
+.time-picker {
+  height: 400px;
+  margin: 6px 20px 0;
+}
+
+.time-item {
+  font-size: 34px;
+  color: $text-1;
+  line-height: 80px;
+  height: 80px;
+  text-align: center;
+}

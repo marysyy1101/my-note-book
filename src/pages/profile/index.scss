@@ -1,0 +1,322 @@
+@use '../../styles/vars' as *;
+
+/* 个人中心：无系统导航栏；渐变只铺顶部（导航 + 个人信息 + 概览数字），
+   下方内容回归浅灰底，卡片式排布 */
+
+.profile-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg;
+}
+
+/* ---------- 顶部渐变（绝对定位，不占流式高度） ---------- */
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 760px;
+  pointer-events: none;
+  /* 右上白色高光 + 主渐变：一路淡到页面底色，不留硬边 */
+  background:
+    radial-gradient(120% 58% at 84% -18%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(
+      180deg,
+      #ffe7da 0%,
+      #fff0e9 32%,
+      rgba(255, 240, 233, 0.5) 60%,
+      rgba(244, 245, 247, 0) 90%
+    );
+}
+
+/* ---------- 自定义导航 ----------
+   高度由 JS 按「状态栏 + 胶囊居中」写成真实 px（见 utils/system.ts），
+   这里不写死 height，避免和 border-box 的 padding-top 打架 */
+.nav {
+  position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 列表滚到标题下方时给导航一层毛玻璃底，避免文字叠在标题上。
+   毛玻璃半径必须用真实 px，而 scss 里的 px 会被转成 rpx，
+   所以 blur 由行内样式下发（见 index.tsx），这里只留底色与阴影 */
+.nav-solid {
+  background: rgba(255, 250, 247, 0.92);
+  box-shadow: 0 1px 0 rgba(27, 31, 36, 0.05), 0 6px 18px rgba(27, 31, 36, 0.04);
+}
+
+.nav-title {
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 600;
+  color: $text-1;
+  letter-spacing: 1px;
+}
+
+/* ---------- 内容区 ---------- */
+.scroll {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---------- 个人信息 ---------- */
+.user {
+  display: flex;
+  align-items: center;
+  /* 左右 28 与下方卡片左边线对齐 */
+  padding: 16px 28px 0;
+}
+
+.avatar-wrap {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  padding: 4px;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(220, 96, 48, 0.18);
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  display: block;
+}
+
+.ident {
+  flex: 1;
+  min-width: 0;
+  margin-left: 24px;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+}
+
+.nickname {
+  font-size: 38px;
+  font-weight: 600;
+  color: $text-1;
+  line-height: 1.3;
+  max-width: 360px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  margin-left: 14px;
+  padding: 3px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #92500f;
+  background: linear-gradient(135deg, #ffe2bd 0%, #ffcb93 100%);
+  flex-shrink: 0;
+}
+
+.sub {
+  display: block;
+  margin-top: 10px;
+  font-size: 24px;
+  color: rgba(27, 31, 36, 0.5);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gear {
+  width: 68px;
+  height: 68px;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gear:active {
+  opacity: 0.55;
+}
+
+.gear-img {
+  width: 42px;
+  height: 42px;
+}
+
+/* ---------- 四列概览 ---------- */
+.figures {
+  display: flex;
+  padding: 44px 16px 20px;
+}
+
+.fig {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fig-v {
+  font-size: 30px;
+  font-weight: 600;
+  color: $text-1;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.fig-k {
+  margin-top: 12px;
+  font-size: 22px;
+  color: rgba(27, 31, 36, 0.45);
+}
+
+/* ---------- 深色结余卡 ---------- */
+.balance {
+  position: relative;
+  overflow: hidden;
+  margin: 24px 28px 0;
+  padding: 32px 36px 38px;
+  border-radius: $radius-lg;
+  background: linear-gradient(135deg, #363a42 0%, #23262b 100%);
+  box-shadow: 0 16px 34px rgba(28, 32, 38, 0.22);
+}
+
+/* 右上角一抹品牌色光晕，避免深色块发死 */
+.balance::after {
+  content: '';
+  position: absolute;
+  right: -90px;
+  top: -110px;
+  width: 270px;
+  height: 270px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 107, 58, 0.22) 0%, rgba(242, 107, 58, 0) 72%);
+}
+
+.balance-k {
+  position: relative;
+  z-index: 1;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.balance-v {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-top: 16px;
+  font-size: 56px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+
+/* ---------- 白卡：常用服务 ---------- */
+.card {
+  margin: 28px 28px 0;
+  padding: 8px 28px 4px;
+  border-radius: $radius-lg;
+  background: $card;
+  box-shadow: 0 10px 26px rgba(24, 28, 36, 0.05);
+}
+
+.card-title {
+  display: block;
+  padding: 22px 0 6px;
+  font-size: 30px;
+  font-weight: 600;
+  color: $text-1;
+}
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  height: 104px;
+}
+
+.menu-row:active {
+  opacity: 0.7;
+}
+
+.menu-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: $brand-soft;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 22px;
+  flex-shrink: 0;
+}
+
+.menu-img {
+  width: 34px;
+  height: 34px;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 29px;
+  color: $text-1;
+}
+
+.menu-value {
+  font-size: 24px;
+  color: $text-3;
+  margin-right: 8px;
+}
+
+.menu-arrow {
+  width: 26px;
+  height: 26px;
+  opacity: 0.25;
+  flex-shrink: 0;
+}
+
+.menu-line {
+  height: 1px;
+  background: $line;
+  margin-left: 86px;
+}
+
+.tip-card {
+  padding-bottom: 30px;
+  /* 最后一个内容块，底部留白要越过凸起按钮（168rpx） */
+  margin-bottom: calc(210px + constant(safe-area-inset-bottom));
+  margin-bottom: calc(210px + env(safe-area-inset-bottom));
+}
+
+.tip-body {
+  display: block;
+  padding-top: 12px;
+  font-size: 25px;
+  line-height: 1.68;
+  color: $text-3;
+}
+
+.tip-foot {
+  display: block;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid $line;
+  font-size: 22px;
+  line-height: 1.6;
+  color: #a8aeb6;
+}

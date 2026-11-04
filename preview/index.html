@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>记账本 · 设计预览</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Helvetica, "Microsoft YaHei", sans-serif;
+    background: #eef0f3;
+    color: #1b1f24;
+    padding: 34px 24px 50px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .head { max-width: 1200px; margin: 0 auto 28px; }
+  .head h1 { font-size: 22px; font-weight: 600; letter-spacing: -.3px; }
+  .head p { margin-top: 8px; font-size: 13px; color: #6b7280; line-height: 1.7; }
+  .head code { background: #e3e6ea; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+  .frames { display: flex; gap: 26px; justify-content: center; flex-wrap: wrap; max-width: 1240px; margin: 0 auto; }
+  .frame-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .frame-label { font-size: 12px; color: #6b7280; letter-spacing: .5px; }
+  .phone {
+    width: 375px; height: 935px; background: #f4f5f7; border-radius: 34px; overflow: hidden;
+    position: relative; box-shadow: 0 20px 48px rgba(20,25,35,.16), 0 0 0 8px #fff, 0 0 0 9px #e3e6ea;
+    display: flex; flex-direction: column;
+  }
+  .nav {
+    height: 78px; background: #fff; display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 11px; font-size: 17px; font-weight: 600; flex-shrink: 0; position: relative;
+  }
+  .nav.dark { background: #f4f5f7; }
+  .nav .back { position: absolute; left: 14px; bottom: 12px; width: 20px; height: 20px; opacity: .8; }
+  .page { flex: 1; min-height: 0; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+  /* 底部导航：明细 / 记一笔（凸起）/ 我的 */
+  .tabbar {
+    position: relative; height: 56px; background: #fff; display: flex; flex-shrink: 0;
+    border-radius: 14px 14px 0 0; box-shadow: 0 -2px 11px rgba(24,28,36,.07);
+  }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+  .tab img { width: 23px; height: 23px; }
+  .tab span { font-size: 10px; color: #9aa0a6; }
+  .tab.on span { color: #f26b3a; font-weight: 600; }
+  .tab.center { justify-content: flex-start; }
+  .plus-wrap {
+    width: 64px; height: 64px; margin-top: -32px; border-radius: 50%; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .plus {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff9d72 0%, #f26b3a 55%, #e2571c 100%);
+    box-shadow: 0 5px 11px rgba(242,107,58,.3);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .plus img { width: 21px; height: 21px; }
+  .tab.center span { color: #f26b3a; font-weight: 600; margin-top: 4px; }
+
+  /* ---------- 明细 ---------- */
+  .p-list { padding: 4px 14px 80px; }
+  .topbar { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; height: 46px; }
+  .refresh-bar {
+    position: absolute; left: 0; right: 0; bottom: 1px; height: 2px; border-radius: 1px;
+    background: linear-gradient(90deg, rgba(242,107,58,0) 0%, #f26b3a 50%, rgba(242,107,58,0) 100%);
+    animation: refresh-slide .9s ease-in-out infinite;
+  }
+  @keyframes refresh-slide {
+    0% { transform: translateX(-55%); opacity: .35; }
+    50% { opacity: 1; }
+    100% { transform: translateX(55%); opacity: .35; }
+  }
+  .ms { display: flex; align-items: center; gap: 2px; }
+  .ms img { width: 17px; height: 17px; opacity: .75; }
+  .ms b { font-size: 17px; font-weight: 600; margin: 0 5px; letter-spacing: -.3px; }
+  .now-btn { font-size: 12px; color: #f26b3a; background: #fff3ed; padding: 5px 12px; border-radius: 999px; }
+  .hero {
+    margin-top: 4px; padding: 17px 18px 14px; border-radius: 16px; color: #fff;
+    background: linear-gradient(135deg, #ff9a6b 0%, #f26b3a 56%, #e2571f 100%);
+    box-shadow: 0 9px 18px rgba(242,107,58,.26);
+  }
+  .hero .hero-top { display: flex; align-items: center; justify-content: space-between; }
+  .hero .stat {
+    font-size: 11px; color: #fff; background: rgba(255,255,255,.2);
+    padding: 5px 10px; border-radius: 999px; letter-spacing: .5px;
+  }
+  .hero .k { font-size: 12px; color: rgba(255,255,255,.82); letter-spacing: .5px; }
+  .hero .amt { display: flex; align-items: baseline; margin-top: 5px; }
+  .hero .amt .c { font-size: 17px; margin-right: 3px; opacity: .9; }
+  .hero .amt .v { font-size: 34px; font-weight: 600; line-height: 1.1; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+  .hero .foot { display: flex; align-items: center; margin-top: 13px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.22); }
+  .hero .foot .it { flex: 1; }
+  .hero .foot .it .kk { font-size: 11px; color: rgba(255,255,255,.72); }
+  .hero .foot .it .vv { font-size: 15px; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .hero .foot .dv { width: 1px; height: 22px; background: rgba(255,255,255,.22); margin: 0 4px; }
+
+  .day { margin-top: 14px; }
+  .day-head { display: flex; align-items: baseline; padding: 0 3px 6px; }
+  .day-head .lb { font-size: 13px; font-weight: 500; color: #5f6772; }
+  .day-head .wk { font-size: 11px; color: #9aa0a6; margin-left: 5px; }
+  .day-head .sm { margin-left: auto; font-size: 11px; color: #9aa0a6; }
+  .card { background: #fff; border-radius: 12px; overflow: hidden; }
+  .row { display: flex; align-items: center; padding: 12px 13px; position: relative; }
+  .row + .row::before { content: ''; position: absolute; left: 62px; right: 13px; top: 0; height: 1px; background: #edeff2; }
+  .ic { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; margin-right: 11px; flex-shrink: 0; }
+  .ic img { width: 22px; height: 22px; }
+  .row .mn { flex: 1; min-width: 0; }
+  .row .nm { font-size: 15px; }
+  .row .nt { font-size: 11px; color: #9aa0a6; margin-top: 3px; }
+  .row .vl { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -.2px; }
+  .row .vl.in { color: #12a160; }
+
+  /* 侧滑删除：外层裁切，内容层左移后露出下面的删除按钮 */
+  .rw { position: relative; overflow: hidden; background: #fff; }
+  .rw .row { background: #fff; }
+  .rw + .rw .row::before { content: ''; position: absolute; left: 62px; right: 13px; top: 0; height: 1px; background: #edeff2; }
+  .rw.swiped .row { transform: translateX(-84px); }
+  .del { position: absolute; top: 0; right: 0; bottom: 0; width: 84px; background: #ef4b3f; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 10px; }
+  .del img { width: 17px; height: 17px; }
+
+  /* ---------- 记一笔 ---------- */
+  .p-add { background: #fff; display: flex; flex-direction: column; height: 100%; min-height: 0; }
+  .tswitch { display: flex; width: 150px; margin: 11px auto 0; padding: 3px; background: #f1f2f4; border-radius: 999px; flex-shrink: 0; }
+  .tswitch div { flex: 1; text-align: center; padding: 6px 0; font-size: 13px; color: #5f6772; border-radius: 999px; }
+  .tswitch div.on { background: #fff; color: #1b1f24; font-weight: 600; box-shadow: 0 1px 4px rgba(20,25,35,.08); }
+  .bigamt { display: flex; align-items: baseline; justify-content: center; padding: 20px 20px 13px; flex-shrink: 0; }
+  .bigamt .c { font-size: 20px; margin-right: 4px; }
+  .bigamt .v { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); padding: 0 5px; row-gap: 7px; flex-shrink: 0; }
+  .ci { display: flex; flex-direction: column; align-items: center; gap: 5px; padding-top: 7px; }
+  .ci .cg { width: 44px; height: 44px; border-radius: 13px; display: flex; align-items: center; justify-content: center; }
+  .ci .cg img { width: 23px; height: 23px; }
+  .ci span { font-size: 11px; color: #9aa0a6; }
+  .ci.on span { color: #1b1f24; font-weight: 500; }
+  .meta { margin: 8px 14px 0; border-top: 1px solid #edeff2; flex-shrink: 0; }
+  .mrow { display: flex; align-items: center; height: 44px; border-bottom: 1px solid #edeff2; }
+  .mrow img.mi { width: 16px; height: 16px; margin-right: 8px; opacity: .55; }
+  .mrow .mt { font-size: 14px; flex: 1; }
+  .mrow .mt.ph { color: #9aa0a6; }
+  .mrow .mh { font-size: 11px; color: #9aa0a6; }
+  .mrow img.ar { width: 13px; height: 13px; opacity: .3; }
+  .kb { margin-top: auto; background: #f2f3f5; padding: 3px 3px 2px; display: flex; border-top: 1px solid #edeff2; flex-shrink: 0; }
+  .keys { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .key { height: 48px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 21px; font-variant-numeric: tabular-nums; }
+  .key img { width: 21px; height: 21px; opacity: .72; }
+  .ok { width: 86px; margin-left: 4px; border-radius: 8px; background: linear-gradient(135deg, #ff8f5f, #f26b3a); color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; letter-spacing: 1px; }
+
+  /* ---------- 统计 ---------- */
+  .p-stats { padding: 0 14px 16px; display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; }
+  .seg { display: flex; margin-top: 11px; padding: 3px; background: #e9ebee; border-radius: 999px; flex-shrink: 0; }
+  .seg div { flex: 1; text-align: center; padding: 7px 0; font-size: 13px; color: #5f6772; border-radius: 999px; }
+  .seg div.on { background: #fff; color: #1b1f24; font-weight: 600; box-shadow: 0 1px 5px rgba(20,25,35,.08); }
+  .tip { font-size: 11px; color: #9aa0a6; padding: 11px 3px 6px; }
+  .bcard { background: #fff; border-radius: 14px; padding: 16px 8px; box-shadow: 0 3px 12px rgba(20,25,35,.04); display: flex; }
+  .bcard .it { flex: 1; text-align: center; }
+  .bcard .it .k { font-size: 11px; color: #9aa0a6; }
+  .bcard .it .v { font-size: 17px; font-weight: 600; margin-top: 7px; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+  .bcard .it .v.in { color: #12a160; }
+  .scard { margin-top: 12px; background: #fff; border-radius: 14px; padding: 15px 14px; box-shadow: 0 3px 12px rgba(20,25,35,.04); }
+  .ch { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
+  .ch .t { font-size: 14px; font-weight: 600; }
+  .ch .s { font-size: 11px; color: #9aa0a6; }
+  .chart { display: flex; align-items: flex-end; height: 95px; gap: 2px; }
+  .bc { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
+  .bar { width: 60%; max-width: 7px; border-radius: 3px 3px 2px 2px; background: #edf0f3; }
+  .bar.h { background: linear-gradient(180deg, #ff9d70, #f26b3a); }
+  .bl { font-size: 9px; color: #b3b9c0; height: 13px; line-height: 13px; margin-top: 4px; }
+  .cf { display: flex; justify-content: space-between; margin-top: 7px; padding-top: 10px; border-top: 1px dashed #edeff2; }
+  .cf .k { font-size: 11px; color: #9aa0a6; }
+  .cf .v { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ks { display: flex; padding: 2px; background: #f2f3f5; border-radius: 999px; }
+  .ks div { font-size: 11px; color: #5f6772; padding: 4px 11px; border-radius: 999px; }
+  .ks div.on { background: #fff; color: #1b1f24; font-weight: 600; }
+  .cr { display: flex; align-items: center; padding: 6px 0; }
+  .cr .cg { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; margin-right: 9px; flex-shrink: 0; }
+  .cr .cg img { width: 17px; height: 17px; }
+  .cr .cm { flex: 1; min-width: 0; }
+  .cr .l1 { display: flex; align-items: baseline; margin-bottom: 6px; }
+  .cr .l1 .n { font-size: 13px; font-weight: 500; }
+  .cr .l1 .c { font-size: 10px; color: #9aa0a6; margin-left: 6px; }
+  .cr .l1 .a { margin-left: auto; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tr { height: 4px; background: #f2f3f5; border-radius: 2px; overflow: hidden; }
+  .tf { height: 100%; border-radius: 2px; }
+  .ct { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 11px; border-top: 1px solid #edeff2; }
+  .ct .k { font-size: 12px; color: #9aa0a6; }
+  .ct .v { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>记账本 · 界面预览</h1>
+  <p>这是纯 HTML 的设计预览，用于在浏览器里检查视觉与排版；真实运行请用微信开发者工具导入项目并编译 <code>npm run dev:weapp</code>。图标取自开源图标库 Lucide（ISC License），与小程序内的 PNG 完全同源。</p>
+</div>
+
+<div class="frames">
+
+  <!-- ============ 明细 ============ -->
+  <div class="frame-wrap">
+    <div class="phone">
+      <div class="nav dark">记账本</div>
+      <div class="page">
+        <div class="p-list">
+          <div class="topbar">
+            <div class="ms">
+              <img src="../src/assets/icons/ui/chevron-left.png" alt="" />
+              <b>2026年11月</b>
+              <img src="../src/assets/icons/ui/chevron-right.png" alt="" />
+            </div>
+            <div class="now-btn">本月</div>
+            <div class="refresh-bar"></div>
+          </div>
+
+          <div class="hero">
+            <div class="hero-top">
+              <div class="k">本月支出</div>
+              <div class="stat">统计 ›</div>
+            </div>
+            <div class="amt"><span class="c">¥</span><span class="v">3,846.50</span></div>
+            <div class="foot">
+              <div class="it"><div class="kk">收入</div><div class="vv">12,800.00</div></div>
+              <div class="dv"></div>
+              <div class="it"><div class="kk">结余</div><div class="vv">8,953.50</div></div>
+              <div class="dv"></div>
+              <div class="it"><div class="kk">笔数</div><div class="vv">23</div></div>
+            </div>
+          </div>
+
+          <div class="day">
+            <div class="day-head"><span class="lb">今天 · 11月3日</span><span class="wk">周二</span><span class="sm">支出 86.50</span></div>
+            <div class="card">
+              <div class="rw">
+                <div class="row">
+                  <div class="ic" style="background:rgba(242,107,58,.1)"><img src="../src/assets/icons/cat/utensils.png" alt="" /></div>
+                  <div class="mn"><div class="nm">餐饮</div><div class="nt"><span class="tm">12:06</span> · 午餐 · 楼下小馆</div></div>
+                  <div class="vl">-38.00</div>
+                </div>
+              </div>
+              <!-- 左滑后露出删除按钮（滑开本身不删，点删除再二次确认） -->
+              <div class="rw swiped">
+                <div class="del"><img src="../src/assets/icons/ui/trash-white.png" alt="" /><span>删除</span></div>
+                <div class="row">
+                  <div class="ic" style="background:rgba(59,130,246,.1)"><img src="../src/assets/icons/cat/bus-front.png" alt="" /></div>
+                  <div class="mn"><div class="nm">交通</div><div class="nt"><span class="tm">08:41</span> · 地铁通勤</div></div>
+                  <div class="vl">-6.00</div>
+                </div>
+              </div>
+              <div class="rw">
+                <div class="row">
+                  <div class="ic" style="background:rgba(99,102,241,.1)"><img src="../src/assets/icons/cat/smartphone.png" alt="" /></div>
+                  <div class="mn"><div class="nm">通讯</div><div class="nt"><span class="tm">09:15</span> · 话费充值</div></div>
+                  <div class="vl">-42.50</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="day">
+            <div class="day-head"><span class="lb">昨天 · 11月2日</span><span class="wk">周一</span><span class="sm">支出 268.00　收入 12,800.00</span></div>
+            <div class="card">
+              <div class="row">
+                <div class="ic" style="background:rgba(236,72,153,.1)"><img src="../src/assets/icons/cat/shopping-bag.png" alt="" /></div>
+                <div class="mn"><div class="nm">购物</div><div class="nt"><span class="tm">19:22</span> · 超市补给</div></div>
+                <div class="vl">-268.00</div>
+              </div>
+              <div class="row">
+                <div class="ic" style="background:rgba(18,161,96,.1)"><img src="../src/assets/icons/cat/wallet.png" alt="" /></div>
+                <div class="mn"><div class="nm">工资</div><div class="nt"><span class="tm">10:03</span> · 11 月薪资</div></div>
+                <div class="vl in">+12,800.00</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab on"><img src="../src/assets/tabbar/bill-active.png" alt="" /><span>明细</span></div>
+        <div class="tab center">
+          <div class="plus-wrap"><div class="plus"><img src="../src/assets/icons/ui/plus-white.png" alt="" /></div></div>
+          <span>记一笔</span>
+        </div>
+        <div class="tab"><img src="../src/assets/tabbar/user.png" alt="" /><span>我的</span></div>
+      </div>
+    </div>
+    <div class="frame-label">明细 · 按月流水</div>
+  </div>
+
+  <!-- ============ 记一笔 ============ -->
+  <div class="frame-wrap">
+    <div class="phone">
+      <div class="nav">
+        <img class="back" src="../src/assets/icons/ui/chevron-left.png" alt="" />记一笔
+      </div>
+      <div class="page">
+        <div class="p-add">
+          <div class="tswitch"><div class="on">支出</div><div>收入</div></div>
+
+          <div class="bigamt"><span class="c">¥</span><span class="v">38.00</span></div>
+
+          <div class="grid">
+            <div class="ci on"><div class="cg" style="background:#f26b3a;box-shadow:0 4px 9px rgba(242,107,58,.32)"><img src="../src/assets/icons/cat/utensils-on.png" alt="" /></div><span>餐饮</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(59,130,246,.1)"><img src="../src/assets/icons/cat/bus-front.png" alt="" /></div><span>交通</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(236,72,153,.1)"><img src="../src/assets/icons/cat/shopping-bag.png" alt="" /></div><span>购物</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(139,92,246,.1)"><img src="../src/assets/icons/cat/house.png" alt="" /></div><span>居住</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(245,158,11,.1)"><img src="../src/assets/icons/cat/gamepad-2.png" alt="" /></div><span>娱乐</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(239,68,68,.1)"><img src="../src/assets/icons/cat/heart-pulse.png" alt="" /></div><span>医疗</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(6,182,212,.1)"><img src="../src/assets/icons/cat/graduation-cap.png" alt="" /></div><span>学习</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(99,102,241,.1)"><img src="../src/assets/icons/cat/smartphone.png" alt="" /></div><span>通讯</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(244,63,94,.1)"><img src="../src/assets/icons/cat/gift.png" alt="" /></div><span>人情</span></div>
+            <div class="ci"><div class="cg" style="background:rgba(148,163,184,.1)"><img src="../src/assets/icons/cat/shapes.png" alt="" /></div><span>其他</span></div>
+          </div>
+
+          <div class="meta">
+            <div class="mrow"><img class="mi" src="../src/assets/icons/ui/calendar.png" alt="" /><span class="mt">今天</span><img class="ar" src="../src/assets/icons/ui/chevron-right.png" alt="" /></div>
+            <div class="mrow"><img class="mi" src="../src/assets/icons/ui/clock.png" alt="" /><span class="mt">18:32:05</span><img class="ar" src="../src/assets/icons/ui/chevron-right.png" alt="" /></div>
+            <div class="mrow"><img class="mi" src="../src/assets/icons/ui/pencil.png" alt="" /><span class="mt ph">添加备注（可选）</span></div>
+          </div>
+
+          <div class="kb">
+            <div class="keys">
+              <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+              <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+              <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+              <div class="key">.</div><div class="key">0</div><div class="key"><img src="../src/assets/icons/ui/backspace.png" alt="" /></div>
+            </div>
+            <div class="ok">完成</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="frame-label">记一笔 · 数字键盘</div>
+  </div>
+
+  <!-- ============ 统计 ============ -->
+  <div class="frame-wrap">
+    <div class="phone">
+      <div class="nav dark"><img class="back" src="../src/assets/icons/ui/chevron-left.png" alt="" />统计</div>
+      <div class="page">
+        <div class="p-stats">
+          <div class="seg"><div class="on">本月</div><div>本年</div><div>全部</div></div>
+          <div class="tip">2026年11月</div>
+
+          <div class="bcard">
+            <div class="it"><div class="k">支出</div><div class="v">3,846.50</div></div>
+            <div class="it"><div class="k">收入</div><div class="v in">12,800.00</div></div>
+            <div class="it"><div class="k">结余</div><div class="v">8,953.50</div></div>
+          </div>
+
+          <div class="scard">
+            <div class="ch"><div class="t">支出趋势</div><div class="s">日均支出 ¥124.08</div></div>
+            <div class="chart">
+              <div class="bc"><div class="bar h" style="height:22px"></div><div class="bl">1</div></div>
+              <div class="bc"><div class="bar h" style="height:64px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:38px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:12px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:48px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:30px"></div><div class="bl">6</div></div>
+              <div class="bc"><div class="bar h" style="height:72px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:18px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:44px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:26px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:56px"></div><div class="bl">11</div></div>
+              <div class="bc"><div class="bar h" style="height:34px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:8px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:42px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:20px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:60px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:28px"></div><div class="bl">16</div></div>
+              <div class="bc"><div class="bar h" style="height:16px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:50px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:24px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:36px"></div><div class="bl">21</div></div>
+              <div class="bc"><div class="bar h" style="height:14px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:46px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:32px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:10px"></div><div class="bl">26</div></div>
+              <div class="bc"><div class="bar h" style="height:40px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:18px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:54px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:22px"></div><div class="bl"></div></div>
+              <div class="bc"><div class="bar h" style="height:6px"></div><div class="bl">30</div></div>
+            </div>
+            <div class="cf"><div class="k">单期最高支出</div><div class="v">¥728</div></div>
+          </div>
+
+          <div class="scard">
+            <div class="ch"><div class="t">分类排行</div><div class="ks"><div class="on">支出</div><div>收入</div></div></div>
+
+            <div class="cr">
+              <div class="cg" style="background:rgba(139,92,246,.1)"><img src="../src/assets/icons/cat/house.png" alt="" /></div>
+              <div class="cm">
+                <div class="l1"><span class="n">居住</span><span class="c">1笔 · 52%</span><span class="a">¥2,000.00</span></div>
+                <div class="tr"><div class="tf" style="width:100%;background:#8b5cf6"></div></div>
+              </div>
+            </div>
+            <div class="cr">
+              <div class="cg" style="background:rgba(242,107,58,.1)"><img src="../src/assets/icons/cat/utensils.png" alt="" /></div>
+              <div class="cm">
+                <div class="l1"><span class="n">餐饮</span><span class="c">11笔 · 22%</span><span class="a">¥846.50</span></div>
+                <div class="tr"><div class="tf" style="width:42%;background:#f26b3a"></div></div>
+              </div>
+            </div>
+            <div class="cr">
+              <div class="cg" style="background:rgba(236,72,153,.1)"><img src="../src/assets/icons/cat/shopping-bag.png" alt="" /></div>
+              <div class="cm">
+                <div class="l1"><span class="n">购物</span><span class="c">4笔 · 15%</span><span class="a">¥580.00</span></div>
+                <div class="tr"><div class="tf" style="width:29%;background:#ec4899"></div></div>
+              </div>
+            </div>
+            <div class="cr">
+              <div class="cg" style="background:rgba(59,130,246,.1)"><img src="../src/assets/icons/cat/bus-front.png" alt="" /></div>
+              <div class="cm">
+                <div class="l1"><span class="n">交通</span><span class="c">5笔 · 7%</span><span class="a">¥268.00</span></div>
+                <div class="tr"><div class="tf" style="width:13%;background:#3b82f6"></div></div>
+              </div>
+            </div>
+            <div class="cr">
+              <div class="cg" style="background:rgba(99,102,241,.1)"><img src="../src/assets/icons/cat/smartphone.png" alt="" /></div>
+              <div class="cm">
+                <div class="l1"><span class="n">通讯</span><span class="c">2笔 · 4%</span><span class="a">¥152.00</span></div>
+                <div class="tr"><div class="tf" style="width:8%;background:#6366f1"></div></div>
+              </div>
+            </div>
+
+            <div class="ct"><div class="k">合计</div><div class="v">¥3,846.50</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="frame-label">统计 · 本月 / 本年 / 全部</div>
+  </div>
+
+</div>
+
+</body>
+</html>

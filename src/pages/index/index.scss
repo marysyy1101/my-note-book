@@ -1,0 +1,437 @@
+@use '../../styles/vars' as *;
+
+.index-page {
+  min-height: 100vh;
+  /* 自定义 tabBar 是浮层，页面自己留出条身 + 安全区的高度 */
+  padding: 8px 28px calc(230px + constant(safe-area-inset-bottom));
+  padding: 8px 28px calc(230px + env(safe-area-inset-bottom));
+  background: $bg;
+}
+
+/* ---------- 顶部月份切换 ---------- */
+.topbar {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 96px;
+}
+
+/* 静默刷新时的顶部细条：比骨架屏轻得多，不打断已渲染的列表 */
+.refresh-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(242, 107, 58, 0) 0%, #f26b3a 50%, rgba(242, 107, 58, 0) 100%);
+  animation: refresh-slide 0.9s ease-in-out infinite;
+}
+
+@keyframes refresh-slide {
+  0% {
+    transform: translateX(-55%);
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(55%);
+    opacity: 0.35;
+  }
+}
+
+.month-switch {
+  display: flex;
+  align-items: center;
+}
+
+.nav-btn {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  &:active {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.nav-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.month-label {
+  font-size: 34px;
+  font-weight: 600;
+  color: $text-1;
+  margin: 0 10px;
+  letter-spacing: -0.5px;
+}
+
+.today-btn {
+  font-size: 24px;
+  color: $brand;
+  background: $brand-soft;
+  padding: 10px 24px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+/* ---------- 汇总卡 ---------- */
+.hero {
+  margin-top: 8px;
+  padding: 34px 36px 28px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, #ff9a6b 0%, #f26b3a 56%, #e2571f 100%);
+  box-shadow: 0 18px 36px rgba(242, 107, 58, 0.26);
+  color: #fff;
+}
+
+.hero-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 统计入口：统计已从 tabBar 降为次级页，入口放在汇总卡右上角 */
+.hero-stat {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+
+  &:active {
+    background: rgba(255, 255, 255, 0.32);
+  }
+}
+
+.hero-stat-text {
+  font-size: 22px;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.hero-stat-arrow {
+  margin-left: 6px;
+  font-size: 24px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hero-k {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 1px;
+}
+
+.hero-amount {
+  display: flex;
+  align-items: baseline;
+  margin-top: 10px;
+}
+
+.hero-symbol {
+  font-size: 34px;
+  font-weight: 500;
+  margin-right: 6px;
+  opacity: 0.9;
+}
+
+.hero-value {
+  font-size: 68px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.hero-foot {
+  display: flex;
+  align-items: center;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.hero-foot-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-foot-k {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.hero-foot-v {
+  font-size: 30px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.hero-divider {
+  width: 1px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.22);
+  margin: 0 8px;
+}
+
+/* ---------- 按日分组 ---------- */
+.day {
+  margin-top: 32px;
+}
+
+.day-head {
+  display: flex;
+  align-items: baseline;
+  padding: 0 6px 12px;
+}
+
+.day-label {
+  font-size: 26px;
+  font-weight: 500;
+  color: $text-2;
+}
+
+.day-weekday {
+  font-size: 22px;
+  color: $text-3;
+  margin-left: 10px;
+}
+
+.day-sum {
+  margin-left: auto;
+  font-size: 22px;
+  color: $text-3;
+}
+
+.day-body {
+  background: $card;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+/* 单条账目：外层裁切 + 内层可平移，右侧露出删除按钮 */
+.row-wrap {
+  position: relative;
+  overflow: hidden;
+  background: $card;
+}
+
+.row-action {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  /* 必须与 tsx 里的 ACTION_DP 一致 */
+  width: 168px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $danger;
+
+  &:active {
+    background: $danger-ink;
+  }
+}
+
+.row-action-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.row-action-text {
+  margin-top: 6px;
+  font-size: 20px;
+  line-height: 1;
+  color: #fff;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 24px 26px;
+  position: relative;
+  background: $card;
+  transition: transform 0.24s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+
+  /* 拖动中必须关掉过渡，否则位移会"拖后腿" */
+  &.row-dragging {
+    transition: none;
+  }
+
+  &:active {
+    background: #fafbfc;
+  }
+}
+
+/* 分割线跟着内容层一起平移 */
+.row-wrap:not(:last-child) .row::after {
+  content: '';
+  position: absolute;
+  left: 124px;
+  right: 26px;
+  bottom: 0;
+  height: 1px;
+  background: $line;
+}
+
+.row-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 22px;
+  flex-shrink: 0;
+}
+
+.row-icon-img {
+  width: 44px;
+  height: 44px;
+}
+
+.row-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.row-name {
+  font-size: 30px;
+  color: $text-1;
+  line-height: 1.3;
+}
+
+.row-note {
+  font-size: 22px;
+  color: $text-3;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.row-meta {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+  min-width: 0;
+}
+
+.row-time {
+  font-size: 22px;
+  color: $text-3;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.row-dot {
+  font-size: 22px;
+  color: $text-3;
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+.row-amount {
+  font-size: 32px;
+  font-weight: 600;
+  margin-left: 16px;
+  flex-shrink: 0;
+
+  &.expense {
+    color: $text-1;
+  }
+
+  &.income {
+    color: $income;
+  }
+}
+
+.load-more {
+  text-align: center;
+  font-size: 22px;
+  color: $text-3;
+  padding: 34px 0 6px;
+}
+
+/* ---------- 状态 ---------- */
+.state-box {
+  margin-top: 60px;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.state-icon {
+  width: 96px;
+  height: 96px;
+  opacity: 0.35;
+}
+
+.state-title {
+  font-size: 30px;
+  color: $text-2;
+  margin-top: 20px;
+}
+
+.state-desc {
+  font-size: 24px;
+  color: $text-3;
+  margin-top: 10px;
+  text-align: center;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+.state-btn {
+  margin-top: 28px;
+  padding: 16px 44px;
+  border-radius: 999px;
+  background: $brand;
+  color: #fff;
+  font-size: 26px;
+}
+
+/* ---------- 骨架屏 ---------- */
+.skeleton {
+  margin-top: 32px;
+}
+
+.skeleton-card {
+  background: $card;
+  border-radius: 24px;
+  padding: 28px 26px;
+  margin-bottom: 20px;
+}
+
+.sk-line {
+  height: 24px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f1f2f4 25%, #f7f8fa 37%, #f1f2f4 63%);
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+    width: 60%;
+  }
+}
+
+.sk-line-sm {
+  width: 30%;
+  height: 20px;
+}
+
+/* ---------- 悬浮按钮 ---------- */

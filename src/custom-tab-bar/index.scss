@@ -1,0 +1,112 @@
+@use '../styles/vars' as *;
+
+/* 自定义 tabBar
+   外层 192rpx = 80rpx 凸起区 + 112rpx 条身，凸起按钮完全落在外层盒子里，
+   避免自定义组件裁剪溢出；外层 pointer-events: none，
+   只有条身与按钮接收点击，凸起区之外的点击仍能落到页面内容上 */
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  display: flex;
+  align-items: flex-end;
+  height: calc(182px + constant(safe-area-inset-bottom));
+  height: calc(182px + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.bar {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: calc(102px + constant(safe-area-inset-bottom));
+  height: calc(102px + env(safe-area-inset-bottom));
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: #ffffff;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -4px 22px rgba(24, 28, 36, 0.07);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab:active {
+  opacity: 0.7;
+}
+
+.tab-icon {
+  width: 46px;
+  height: 46px;
+}
+
+.tab-text {
+  margin-top: 8px;
+  font-size: 20px;
+  line-height: 1;
+  color: $text-3;
+}
+
+.tab-text.on {
+  color: $brand;
+  font-weight: 600;
+}
+
+/* ---------- 中间凸起按钮 ---------- */
+.tab-center {
+  justify-content: flex-start;
+}
+
+.tab-center:active {
+  opacity: 1;
+}
+
+/* 白色底座：与条身同色，视觉上是一个「凸起」，同时挡住圆背后的内容 */
+.plus-wrap {
+  width: 128px;
+  height: 128px;
+  /* 上提 64rpx，顶到外层盒子的凸起区里 */
+  margin-top: -60px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plus {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9d72 0%, #f26b3a 55%, #e2571c 100%);
+  box-shadow: 0 10px 22px rgba(242, 107, 58, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease;
+}
+
+.tab-center:active .plus {
+  transform: scale(0.94);
+}
+
+.plus-icon {
+  width: 42px;
+  height: 42px;
+}
+
+.plus-text {
+  margin-top: 8px;
+  font-size: 20px;
+  line-height: 1;
+  color: $brand;
+  font-weight: 600;
+}
